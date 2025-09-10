@@ -6,4 +6,62 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Answers go here!
+## Clean white wine data:
+
+```{r}
+library(readxl)
+library(dplyr)
+
+white_wine <- read_excel("white_wine.xlsx", sheet = 1, skip = 1, col_names = FALSE)
+variable_names <- read_excel("white_wine.xlsx", sheet = 2)
+white_wine
+variable_names_extracted <- as.character(variable_names[[1]])
+colnames(white_wine) <- variable_names_extracted
+
+#add column for white wine
+white_wine2 <- white_wine |>
+  mutate(type = "white")
+white_wine2
+```
+
+## Clean red wine data:
+
+```{r}
+library(readr)
+
+#red_wine <- read_csv2("https://www4.stat.ncsu.edu/~online/datasets/red-wine.csv")
+red_wine <- read_delim(
+  "https://www4.stat.ncsu.edu/~online/datasets/red-wine.csv",
+  delim = ";",
+  locale = locale(decimal_mark = ".", grouping_mark = ",")
+)
+variable_names_extracted <- as.character(variable_names[[1]])
+colnames(red_wine) <- variable_names_extracted
+
+red_wine2 <- red_wine |>
+  mutate(across(where(is.character), as.numeric)) |>
+  mutate(type = "red")
+#str(red_wine2)
+View(red_wine2)
+```
+
+## Combine and process red and white wine data sets
+
+```{r}
+
+combined_wine <- bind_rows(white_wine2, red_wine2, .id = NULL)
+
+combined_wine2 <- combined_wine |>
+  filter (quality > 6.5 & alcohol < 132) |>
+  arrange (desc(quality)) |>
+  select(contains("acid"), alcohol, type, quality) |>
+  group_by(quality) |>
+  mutate(alcohol_mean = mean(alcohol, na.rm = TRUE), alcohol_sd = sd(alcohol, na.rm = TRUE ))
+  #mutate(alcohol_mean = mean(alcohol, na.rm = TRUE)) |>
+  #mutate(alcohol_sd = sd(alcohol, na.rm = TRUE)) |>
+  
+  #add mean and sd of alcohol for each setting of the quality variable |>
+  
+combined_wine2
+
+```

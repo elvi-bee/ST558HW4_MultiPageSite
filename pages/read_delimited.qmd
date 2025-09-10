@@ -6,5 +6,65 @@ editor_options:
   chunk_output_type: inline
 ---
 
+## Task 2: Tidyverse
 
-Answers go here!
+```{r}
+
+library(tidyverse)
+```
+
+download data from URL and save
+
+```{r}
+# read in data from URL and specify col names
+glass_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data", col_names = c("ID","RI","Na","Mg","Al","Si","K","Ca","Ba","Fe","TypeOfGlass"))
+glass_data
+
+
+```
+
+mutate
+
+```{r}
+
+library(dplyr)
+
+glass_data2 <- glass_data |>
+  mutate(
+    TypeOfGlass = case_when(
+      TypeOfGlass == 1 ~ "building_windows_float_processed",
+      TypeOfGlass == 2 ~ "building_windows_non_float_processed",
+      TypeOfGlass == 3 ~ "vehicle_windows_float_processed",
+      TypeOfGlass == 4 ~ "vehicle_windows_non_float_processed",
+      TypeOfGlass == 5 ~ "containers",
+      TypeOfGlass == 6 ~ "tablewares",
+      TypeOfGlass == 7 ~ "headlamps",
+      TRUE             ~ "other"
+    )
+  ) |>
+  filter(Fe < 0.2) |>
+  filter(TypeOfGlass == "tablewares" | TypeOfGlass == "headlamps")
+   
+glass_data2
+```
+
+Yeast
+
+```{r}
+library(tidyverse)
+# read in yeast space delimited file from URL
+yeast_data <- read_table("https://www4.stat.ncsu.edu/~online/datasets/yeast.data", col_names = c("seq_name","mcg","gvh", "alm","mit","erl","pox","vac","nuc","class"))
+ 
+
+
+yeast_data2 <- yeast_data |>
+  select(-seq_name, -nuc) |>
+  group_by(class) |>
+  mutate(across(where(is.numeric), mean, .names = "mean_{.col}"))
+  
+
+
+
+```
+
+Continue your chain to add columns corresponding to the mean and median of each numeric variable (mcg, gvh, alm, mit, erl, pox, and vac) at each class grouping (see the across() function as we did in the dplyr video!).
