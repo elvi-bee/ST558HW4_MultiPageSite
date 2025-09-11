@@ -10,73 +10,35 @@ editor_options:
 
 #### 1. If your working directory is myfolder/homework/, what relative path would you specify to get the file located at myfolder/MyData.csv?
 
-read.csv("MyData.csv")
+read.csv("../MyData.csv")
 
 #### 2. What are the major benefits of using R projects?
 
-R Projects are easy to create and provide a straightforward way to divide work into multiple contexts, including a working directory, work space, history, and folder structure and source documents. As long as we've used relative paths in our R Project, we can also share the Project with other users, who will easily be able to work seamlessly on the project. Other users will have to download and install any version of R packages, as packages are specific to a computer and not automatically transferred along with a project.
+-   R Projects are easy to create.
+
+-   They provide a straightforward way to organize your project, including a working directory, work space, history, and folder structure with source documents.
+
+-   R Projects are easy to share: As long as we've used relative paths in our R Project, we can also share the Project with other users, who will easily be able to work seamlessly on the project. Other users will have to download and install any version of R packages, as packages are specific to a computer and not automatically transferred along with a project.
 
 #### 3. What is git and what is github?
 
-Git is version control software. GitHub is a web interface that makes it easy to use Git for version control and to collaborate with other people by sharing code and more.
+- Git is an open-source version control software. 
+- GitHub is a web platform that is built around Git. It offers a user-friendly interface that makes it easy to use Git for version control and to collaborate with other people by sharing code and more.
 
 #### 4. What are the two main differences between a tibble and a data.frame?
 
-data.frame is a function in R to create a data frame. A tibble is used in tidyverse. A tibble is a more modern version of a data frame. Data frame prints all the columns and can print a very large output if the dataset is big. A tibble prints only the first 10 rows and fits the output to your screen width. This makes it much more user-friendly for large datasets. The most important difference between tibbles and data frames is the way tibbles print; they are designed for large datasets, so they only show the first few rows and only the columns that fit on one screen.
+- Printing: A tibble prints only the first 10 rows and fits the output to your screen width. This makes it much more user-friendly for large data sets. The most important difference between tibbles and data frames is the way tibbles print; they are designed for large datasets, so they only show the first few rows (10 rows) and only the columns that fit on one screen.
+- Referencing and Handling Columns: When performing queries, subsets, etc. Data Frames will accept partial matches of column names, but Tibbles require exact matching names.
 
 #### 5. Rewrite the following nested function call using BaseR’s chaining operator:
 
 -   arrange(filter(select(as_tibble(iris), starts_with("Petal"), Species), Petal.Length \< 1.55), Species)
 
 ```{r}
+library(tidyverse)
   as_tibble(iris) |>
     select(starts_with("Petal"), Species) |>
     filter(Petal.Length < 1.55) |>
     arrange(Species)
 
 ```
-
-## Task 2: Tidyverse
-
-```{r}
-
-library(tidyverse)
-```
-
-download data from URL and save
-
-```{r}
-# read in data from URL and specify col names
-glass_data <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/glass.data", col_names = c("ID","RI","Na","Mg","Al","Si","K","Ca","Ba","Fe","TypeOfGlass"))
-glass_data
-
-
-```
-
-mutate
-
-```{r}
-
-library(dplyr)
-
-glass_data2 <- glass_data |>
-  mutate(
-    TypeOfGlass = case_when(
-      TypeOfGlass == 1 ~ "building_windows_float_processed",
-      TypeOfGlass == 2 ~ "building_windows_non_float_processed",
-      TypeOfGlass == 3 ~ "vehicle_windows_float_processed",
-      TypeOfGlass == 4 ~ "vehicle_windows_non_float_processed",
-      TypeOfGlass == 5 ~ "containers",
-      TypeOfGlass == 6 ~ "tablewares",
-      TypeOfGlass == 7 ~ "headlamps",
-      TRUE             ~ "other"
-    )
-  ) |>
- filter(Fe < 0.2) |>
-  filter(TypeOfGlass == "tablewares" | TypeOfGlass == "headlamps")
-   
-glass_data2
-```
-
-Yeast
-
